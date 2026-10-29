@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Блекаут — інтерактивна пригода</title>
+<style>
+*{box-sizing:border-box} :root{--ink:#f5f4f6;--muted:#b7b5c1;--panel:#11121b;--line:#343441;--mint:#65d8c5;--orange:#ff754a}
+body{margin:0;background:#080910;color:var(--ink);font-family:Arial,Helvetica,sans-serif;min-height:100vh;display:grid;place-items:center;padding:14px;overflow-x:hidden}
+.game{width:min(470px,100%);height:min(850px,calc(100vh - 28px));min-height:620px;position:relative;overflow:hidden;border:1px solid #292a36;border-radius:22px;background:linear-gradient(#111322 0%,#292233 38%,#d16d45 68%,#15131a 100%);box-shadow:0 24px 80px #0009}
+.sky{position:absolute;inset:0;background:radial-gradient(circle at 20% 16%,#ffffff9 0 1px,transparent 2px),radial-gradient(circle at 76% 24%,#ffffff8 0 1px,transparent 2px),radial-gradient(circle at 40% 38%,#ffffff8 0 1px,transparent 2px),radial-gradient(circle at 90% 58%,#ffffff8 0 1px,transparent 2px),linear-gradient(180deg,#0a0b13 0%,#24202d 43%,#e47b4b 73%,#17151b 100%);opacity:.95}
+.sky:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 68%,#ffb35c55,transparent 40%),linear-gradient(90deg,#08091055,transparent 40%,#08091055)}
+.city{position:absolute;bottom:9%;left:0;right:0;height:34%;opacity:.78;background:linear-gradient(90deg,transparent 0 3%,#292331 3% 17%,transparent 17% 19%,#342735 19% 32%,transparent 32% 36%,#302631 36% 52%,transparent 52% 57%,#352735 57% 73%,transparent 73% 78%,#292331 78% 96%,transparent 96%);clip-path:polygon(0 30%,8% 30%,8% 8%,18% 8%,18% 45%,28% 45%,28% 22%,39% 22%,39% 4%,49% 4%,49% 35%,59% 35%,59% 14%,70% 14%,70% 40%,81% 40%,81% 10%,91% 10%,91% 29%,100% 29%,100% 100%,0 100%)}
+.city:after{content:"";position:absolute;inset:20% 0 0;background:repeating-linear-gradient(90deg,transparent 0 18px,#ffb45b 18px 22px,transparent 22px 34px);opacity:.6}
+.top{position:absolute;z-index:2;top:16px;left:18px;right:18px;display:flex;justify-content:space-between;color:#d4d3dc;font-size:11px;letter-spacing:.14em;font-weight:bold}
+.brand{color:#75d9c8}
+.story{position:absolute;z-index:2;top:14%;left:8%;right:8%;text-align:center}
+.kicker{font-size:11px;color:#d5d1d9;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+h1{font-size:clamp(27px,8vw,39px);line-height:1.02;margin:0;text-transform:uppercase;text-shadow:0 3px 2px #0009;letter-spacing:-.04em}
+h1 span{color:var(--mint)}
+.dialog{font-size:14px;line-height:1.5;color:#f0edf1;margin:17px auto 0;max-width:330px;text-shadow:0 2px 5px #000}
+.scene{position:absolute;z-index:1;left:0;right:0;top:35%;height:36%;display:flex;align-items:center;justify-content:center}
+.character{position:relative;width:105px;height:230px;filter:drop-shadow(0 12px 7px #0007);transform:scale(.88)}
+.head{position:absolute;top:0;left:26px;width:55px;height:55px;border-radius:50%;background:#087d78;border:3px solid #20242a;box-shadow:inset -9px -6px #045650}
+.head:before{content:"";position:absolute;left:9px;top:12px;width:30px;height:24px;border:1px solid #8de3d3;border-radius:50%;opacity:.65}
+.body{position:absolute;top:53px;left:14px;width:80px;height:94px;background:#73543e;border:3px solid #30251e;border-radius:13px 13px 7px 7px}
+.body:after{content:"";position:absolute;top:19px;left:23px;width:27px;height:24px;background:#4b382c;border:2px solid #87684b}
+.arm{position:absolute;top:64px;width:19px;height:80px;background:#73543e;border:3px solid #30251e;border-radius:10px}
+.arm.left{left:0;transform:rotate(8deg)}.arm.right{right:0;transform:rotate(-8deg)}
+.leg{position:absolute;top:142px;width:25px;height:77px;background:#45434a;border:3px solid #24242a;border-radius:4px}
+.leg.left{left:23px;transform:rotate(2deg)}.leg.right{right:23px;transform:rotate(-2deg)}
+.boot{position:absolute;bottom:0;width:32px;height:9px;background:#17171c;border-radius:4px}.boot.l{left:14px}.boot.r{right:13px}
+.card{position:absolute;z-index:3;left:6%;right:6%;bottom:4%;background:linear-gradient(180deg,#171821ed,#0d0e15f5);border:1px solid #4b4651;border-radius:17px;padding:17px 16px 15px;box-shadow:0 14px 35px #0008;backdrop-filter:blur(8px)}
+.card .label{font-size:10px;letter-spacing:.14em;color:var(--mint);font-weight:bold;margin-bottom:8px}
+.card h2{font-size:19px;margin:0 0 8px;text-transform:uppercase;letter-spacing:-.02em}
+.card p{font-size:13px;line-height:1.5;color:#d4d2da;margin:0 0 13px;white-space:pre-line}
+.choices{display:grid;gap:8px;max-height:245px;overflow:auto}
+button{border:1px solid #494753;border-radius:10px;background:#24232d;color:#f5f2f6;padding:11px 12px;text-align:left;font-size:13px;font-weight:bold;cursor:pointer}
+button:hover,button:focus-visible{outline:none;border-color:var(--mint);background:#2b3a3b}
+button.primary{background:var(--mint);color:#081614;border-color:var(--mint);text-align:center}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #4a4652;background:#090a10;color:white;margin-bottom:9px}
+.footer{font-size:10px;color:#8f8c98;text-align:center;margin-top:10px}
+@media(max-height:700px){.game{min-height:560px}.story{top:12%}.scene{top:30%;height:31%}.card{bottom:3%;padding:13px}.choices{max-height:210px}}
+</style></head><body>
+<main class="game"><div class="sky"></div><div class="city"></div>
+<div class="top"><span class="brand">BLACKOUT / STORY</span><span id="step">EPISODE 01</span></div>
+<div class="story"><div class="kicker" id="kicker">Текстова пригода</div><h1 id="headline">БЛЕКАУТ<br><span>ЩО ЯКЩО?</span></h1><div class="dialog" id="dialog">У будинку раптово зникає світло...</div></div>
+<div class="scene"><div class="character"><div class="head"></div><div class="body"></div><div class="arm left"></div><div class="arm right"></div><div class="leg left"></div><div class="leg right"></div><div class="boot l"></div><div class="boot r"></div></div></div>
+<section class="card" id="card"></section></main>
+<script>
+const card=document.querySelector('#card'),headline=document.querySelector('#headline'),dialog=document.querySelector('#dialog'),kicker=document.querySelector('#kicker'),step=document.querySelector('#step');
+let name='',role='',items='',gunBox=0,turn=0,hasPlan=false;
+const route=['ліворуч','вгору','праворуч','праворуч','вгору','ліворуч'];
+function screen(label,title,desc,choices){kicker.textContent=label;headline.innerHTML=title;dialog.textContent=desc;card.innerHTML=`<div class="label">ТВОЄ РІШЕННЯ</div><h2>${title.replace(/<br>/g,' ')}</h2><p>${desc}</p><div class="choices"></div><div class="footer">BLACKOUT · кожен вибір має наслідки</div>`;let box=card.querySelector('.choices');choices.forEach(c=>{let b=document.createElement('button');b.textContent=c.text;b.className=c.primary?'primary':'';b.onclick=c.go;box.appendChild(b)})}
+function inputScreen(){kicker.textContent='Початок історії';headline.innerHTML='БЛЕКАУТ<br><span>ПЕРШЕ</span>';dialog.textContent='Ти звичайний мешканець. Раптом у будинку зникає світло, ліфти зупиняються, а в коридорі чути мародерів.';card.innerHTML='<div class="label">ВВЕДИ ІМ’Я</div><input id="name" maxlength="22" placeholder="Твоє ім’я"><div class="choices"><button class="primary" id="go">Почати →</button></div><div class="footer">BLACKOUT · інтерактивна пригода</div>';card.querySelector('#go').onclick=()=>{name=card.querySelector('#name').value.trim();if(!name){card.querySelector('#name').placeholder='Введи ім’я';return}chooseRole()};card.querySelector('#name').onkeydown=e=>{if(e.key==='Enter')card.querySelector('#go').click()}}
+function chooseRole(){screen('ВИБІР ПЕРСОНАЖА','ОБЕРИ<br><span>КЛАС</span>',`${name}, хто ти у цій історії?`,[{text:'Інженер · ліхтарик',go:()=>{role='інженер';items='ліхтарик';first()}},{text:'Рятувальник ДСНС · спорядження',go:()=>{role='рятувальник дснс';items='рятувальне спорядження';first()}},{text:'Крадій · відмичка',go:()=>{role='крадій';items='відмичка';first()}}])}
+function first(){step.textContent=`${name.toUpperCase()} · ${role.toUpperCase()}`;screen('ЕПІЗОД 01','КУДИ<br><span>ПІДЕШ?</span>','Ти стоїш у темному коридорі. Ліфт не працює. Згори долинає шум, а знизу чути голоси.',[{text:'→ Прямо до ліфта',go:()=>win('Ти використовуєш свої предмети й знаходиш аварійний доступ до ліфта. Дістаєшся електрощитової та відновлюєш світло!')},{text:'↑ Угору',go:up},{text:'↓ Униз',go:down}])}
+function up(){if(Math.random()<.5)win('Ти піднімаєшся на технічний поверх і знаходиш безпечний вихід. Тобі пощастило!');else lose('Сходи руйнуються під ногами. Ти не встигаєш відскочити.')}
+function down(){screen('ЕПІЗОД 02','ПІД<br><span>ЗЕМЛЕЮ</span>','У підвалі ти зустрічаєш мародерів. Вони перекрили прохід.',[{text:'Битися',go:()=>lose('Мародерів надто багато. Вони перемагають тебе.')},{text:'Домовитися',go:()=>lose('Мародери не погоджуються на переговори.')},{text:'Тікати в кімнату',go:boxes}])}
+function boxes(){gunBox=Math.floor(Math.random()*3);screen('ЗНАХІДКА','ТРИ<br><span>ЯЩИКИ</span>','Ти зачиняєш двері. У одному з ящиків може бути пістолет. Який відкриєш?',['Перший','Другий','Третій'].map((t,i)=>({text:t,go:()=>{if(i!==gunBox)lose('У ящику нічого немає. Мародери знаходять тебе.');else treasure()}})))}
+function treasure(){items+=', пістолет';screen('ЕПІЗОД 03','СТАРА<br><span>СКАРБНИЦЯ</span>','Ти знайшов пістолет і відлякав мародерів. Попереду — сейф та двері до лабіринту.',[{text:'Оглянути сейф',go:()=>{if(role==='крадій'){hasPlan=true;screen('ЗНАЙДЕНО','ПЛАН<br><span>ПІДВАЛУ</span>','Ти відкриваєш сейф відмичкою. Маршрут: ← ↑ → → ↑ ←',[ {text:'Іти до лабіринту',go:maze}])}else screen('СЕЙФ','ЗАМКНЕНО','Ти не можеш відкрити сейф. Доведеться пройти без плану.',[{text:'Продовжити',go:maze}])}}])}
+function maze(){turn=0;move()}
+function move(){if(turn===6){switchRoom();return}let expected=route[turn],labels={'ліворуч':'←','вгору':'↑','праворуч':'→'};screen(`ЛАБІРИНТ · ${turn+1}/6`,'ЗНАЙДИ<br><span>ШЛЯХ</span>',hasPlan?`План показує наступний напрямок: ${labels[expected]}`:'Обери напрямок. Помилка — початок гри спочатку.',['ліворуч','вгору','праворуч'].map(d=>({text:labels[d],go:()=>{if(d===expected){turn++;move()}else lose('Неправильний напрямок! Ти заблукав у підвалі.')}})))}
+function switchRoom(){screen('ОСТАННЄ ВИПРОБУВАННЯ','ЕЛЕКТРО<br><span>ЩИТОВА</span>','Ти пройшов лабіринт. Обери перемикач, щоб повернути світло.',[{text:'Перший',go:()=>lose('Неправильний перемикач. Система блокує двері.')},{text:'Другий',go:()=>win('Ти ввімкнув правильний перемикач! Світло повертається, мародери тікають. Ти врятувався!')},{text:'Третій',go:()=>lose('Неправильний перемикач. Система блокує двері.')}])}
+function lose(msg){screen('КІНЕЦЬ ГРИ','ТИ<br><span>ПРОГРАВ</span>',msg,[{text:'↻ Почати спочатку',primary:true,go:inputScreen}])}
+function win(msg){screen('МІСІЮ ВИКОНАНО','ТИ<br><span>ВИЖИВ</span>',msg+` Вітаємо, ${name}!`,[{text:'↻ Зіграти ще раз',primary:true,go:inputScreen}])}
+inputScreen();
+</script></body></html>
